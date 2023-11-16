@@ -4,12 +4,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div style="display: flex; justify-content: center; align-items: center;"></div>
-<video height="720" width="1080" controls>
-    <source src="Video Presentación- Inteligencia Artificial en la Salud. Desarrollo Humano Integral.mp4" type="video/mp4">
-</video>
-</div>
-</body> 
+  <div>
+    <p>Sube tu video aqui!</p>
+    <input type="file" id="videoUsuario" style="display:none;">
+    <button id="botonParaSubir">Choose File</button>
+  </div>
+  <div class="videoList">
+    <video height="360" width="700" controls>
+      <source src="https://igcdogmqwiqwzkjdqqnb.supabase.co/storage/v1/object/public/videos/0243ca04-5d15-4ad5-8ed5-0ee43bbe7d88.mp4?t=2023-11-16T00%3A42%3A31.153Z" type="video/mp4">
+    </video>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js';
+    import { v4 as uuidv4 } from 'https://cdn.skypack.dev/uuid';
+
+    const supabase = createClient('https://igcdogmqwiqwzkjdqqnb.supabase.co', 'tu-api-key-aqui');
+
+    document.querySelector('#botonParaSubir').addEventListener('click', function selectFile() {
+      document.getElementById('videoUsuario').click();
+      console.log('click');
+    });
+
+    document.getElementById('videoUsuario').addEventListener('change', async function (e) {
+      var videoSeleccionado = e.target.files[0];
+
+      if (videoSeleccionado) {
+        console.log('Archivo seleccionado:', videoSeleccionado.name);
+        const { data, error } = await supabase.storage
+          .from('videos')
+          .upload(uuidv4() + '.mp4', videoSeleccionado);
+
+        if (error) {
+          console.error(error);
+          alert('Algo ha salido mal!');
+        } else {
+          console.log('Archivo subido correctamente:', data.Key);
+          getVideos(); // Llamamos a la función getVideos después de subir el video.
+        }
+      }
+
+      async function getVideos() {
+        const { data, error } = await supabase
+          .storage
+          .from('videos')
+          .list('');
+
+        if (data !== null) {
+          setVideos(data);
+        } else {
+          console.log(error);
+        }
+      }
+
+      function setVideos(videoData) {
+        // Aquí deberías implementar la lógica para mostrar los videos en tu interfaz.
+        // Puedes recorrer videoData y crear elementos HTML para cada video.
+        // Por ejemplo, puedes añadir elementos <video> a un contenedor en tu HTML.
+        const videoContainer = document.querySelector('.videoList');
+
+        videoData.forEach(video => {
+          const videoElement = document.createElement('video');
+          videoElement.setAttribute('controls', true);
+          const sourceElement = document.createElement('source');
+          sourceElement.setAttribute('src', CDNURL + video.name); // CDNURL debe ser la URL correcta para acceder a los videos
+          sourceElement.setAttribute('type', 'video/mp4');
+          videoElement.appendChild(sourceElement);
+          videoContainer.appendChild(videoElement);
+        });
+      }
+    });
+</script>
+
+  
+</body>
+</html>
