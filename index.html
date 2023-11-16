@@ -14,9 +14,6 @@
     <button id="botonParaSubir">Choose File</button>
   </div>
   <div class="videoList">
-    <video height="360" width="700" controls>
-      <source src="https://igcdogmqwiqwzkjdqqnb.supabase.co/storage/v1/object/public/videos/0243ca04-5d15-4ad5-8ed5-0ee43bbe7d88.mp4?t=2023-11-16T00%3A42%3A31.153Z" type="video/mp4">
-    </video>
   </div>
 
   <script type="module">
@@ -27,6 +24,11 @@
 
     const CDNURL = 'https://igcdogmqwiqwzkjdqqnb.supabase.co/storage/v1/object/public/videos/'
 
+    document.addEventListener('DOMContentLoaded', async function () {
+    // Llama a la función getVideos cuando se carga la página
+    await getVideos();
+  });
+
     document.querySelector('#botonParaSubir').addEventListener('click', function selectFile() {
       document.getElementById('videoUsuario').click();
       console.log('click');
@@ -34,6 +36,7 @@
 
     document.getElementById('videoUsuario').addEventListener('change', async function (e) {
       var videoSeleccionado = e.target.files[0];
+      console.log(videoSeleccionado);
 
       if (videoSeleccionado) {
         console.log('Archivo seleccionado:', videoSeleccionado.name);
@@ -49,6 +52,9 @@
           getVideos(); // Llamamos a la función getVideos después de subir el video.
         }
       }
+    })
+
+   
 
       async function getVideos() {
         const { data, error } = await supabase
@@ -58,7 +64,10 @@
 
         if (data !== null) {
           setVideos(data);
-        } else {
+        } else if (error) {
+          console.log(error);
+        } 
+        else {
           console.log(error);
         }
       }
@@ -72,6 +81,7 @@
         videoData.forEach(video => {
           const videoElement = document.createElement('video');
           videoElement.setAttribute('controls', true);
+          videoElement.setAttribute('class', 'video grid-item')
           const sourceElement = document.createElement('source');
           sourceElement.setAttribute('src', CDNURL + video.name); // CDNURL debe ser la URL correcta para acceder a los videos
           sourceElement.setAttribute('type', 'video/mp4');
@@ -79,7 +89,7 @@
           videoContainer.appendChild(videoElement);
         });
       }
-    });
+;
 </script>
 
   
