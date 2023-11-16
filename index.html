@@ -23,7 +23,9 @@
     import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js';
     import { v4 as uuidv4 } from 'https://cdn.skypack.dev/uuid';
 
-    const supabase = createClient('https://igcdogmqwiqwzkjdqqnb.supabase.co', 'tu-api-key-aqui');
+    const supabase = createClient('https://igcdogmqwiqwzkjdqqnb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnY2RvZ21xd2lxd3pramRxcW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwODExNjYsImV4cCI6MjAxNTY1NzE2Nn0.oNyBTqxf4imZW1jbyKhtyUFyPLu5rU-7VSZTddZFcrE');
+
+    const CDNURL = 'https://igcdogmqwiqwzkjdqqnb.supabase.co/storage/v1/object/public/videos/'
 
     document.querySelector('#botonParaSubir').addEventListener('click', function selectFile() {
       document.getElementById('videoUsuario').click();
@@ -62,10 +64,10 @@
       }
 
       function setVideos(videoData) {
-        // Aquí deberías implementar la lógica para mostrar los videos en tu interfaz.
-        // Puedes recorrer videoData y crear elementos HTML para cada video.
-        // Por ejemplo, puedes añadir elementos <video> a un contenedor en tu HTML.
+       
         const videoContainer = document.querySelector('.videoList');
+
+        videoContainer.innerHTML = '';
 
         videoData.forEach(video => {
           const videoElement = document.createElement('video');
